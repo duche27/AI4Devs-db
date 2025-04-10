@@ -1,26 +1,48 @@
 import React from 'react';
-import logo from './logo.svg';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { Layout, Menu } from 'antd';
+import { UserOutlined, TeamOutlined } from '@ant-design/icons';
+import CandidateList from './components/CandidateList';
+import RecruiterList from './components/RecruiterList';
 import './App.css';
 
-function App() {
+const { Header, Content } = Layout;
+
+const App: React.FC = () => {
+  const menuItems = [
+    {
+      key: '1',
+      icon: <UserOutlined />,
+      label: <Link to="/">Candidates</Link>,
+    },
+    {
+      key: '2',
+      icon: <TeamOutlined />,
+      label: <Link to="/recruiters">Recruiters</Link>,
+    },
+  ];
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Layout className="app-container">
+        <Header>
+          <div className="logo" />
+          <Menu
+            theme="dark"
+            mode="horizontal"
+            defaultSelectedKeys={['1']}
+            items={menuItems}
+          />
+        </Header>
+        <Content className="site-layout-content">
+          <Routes>
+            <Route path="/" element={<CandidateList />} />
+            <Route path="/recruiters" element={<RecruiterList />} />
+          </Routes>
+        </Content>
+      </Layout>
+    </Router>
   );
-}
+};
 
 export default App;

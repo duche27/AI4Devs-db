@@ -1,64 +1,27 @@
-import { Request, Response, NextFunction } from 'express';
 import express from 'express';
-import { PrismaClient } from '@prisma/client';
-import dotenv from 'dotenv';
-import candidateRoutes from './routes/candidateRoutes';
-import { uploadFile } from './application/services/fileUploadService';
 import cors from 'cors';
+import { PrismaClient } from '@prisma/client';
+import candidateRoutes from './infrastructure/http/routes/candidateRoutes';
+import recruiterRoutes from './infrastructure/http/routes/recruiterRoutes';
 
-// Extender la interfaz Request para incluir prisma
-declare global {
-  namespace Express {
-    interface Request {
-      prisma: PrismaClient;
-    }
-  }
-}
-
-dotenv.config();
+const app = express();
 const prisma = new PrismaClient();
 
-export const app = express();
-export default app;
-
-// Middleware para parsear JSON. Asegúrate de que esto esté antes de tus rutas.
+app.use(cors());
 app.use(express.json());
 
-// Middleware para adjuntar prisma al objeto de solicitud
-app.use((req, res, next) => {
-  req.prisma = prisma;
-  next();
-});
+// Routes
+app.use('/api/candidates', candidateRoutes);
+app.use('/api/recruiters', recruiterRoutes);
 
-// Middleware para permitir CORS desde http://localhost:3000
-app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true
-}));
-
-// Import and use candidateRoutes
-app.use('/candidates', candidateRoutes);
-
-// Route for file uploads
-app.post('/upload', uploadFile);
-
-app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
-  next();
-});
-
-const port = 3010;
-
-app.get('/', (req, res) => {
-  res.send('Hola LTI!');
-});
-
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+// Error handling middleware
+app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error(err.stack);
-  res.type('text/plain'); 
-  res.status(500).send('Something broke!');
+  res.status(500).json({ message: 'Something went wrong!' });
 });
 
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+const PORT = process.env.PORT || 3010;
+
+app.listen(PORT, () => {
+  console.log(`Server is running at http://localhost:${PORT}`);
 });

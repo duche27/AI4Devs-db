@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Candidate" ALTER COLUMN "position" DROP DEFAULT,
+ALTER COLUMN "updatedAt" DROP DEFAULT;

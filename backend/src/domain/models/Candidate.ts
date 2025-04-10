@@ -3,8 +3,6 @@ import { Education } from './Education';
 import { WorkExperience } from './WorkExperience';
 import { Resume } from './Resume';
 
-const prisma = new PrismaClient();
-
 export class Candidate {
     id?: number;
     firstName: string;
@@ -15,6 +13,7 @@ export class Candidate {
     education: Education[];
     workExperience: WorkExperience[];
     resumes: Resume[];
+    private static prisma: PrismaClient;
 
     constructor(data: any) {
         this.id = data.id;
@@ -28,7 +27,15 @@ export class Candidate {
         this.resumes = data.resumes || [];
     }
 
+    static setPrismaClient(client: PrismaClient) {
+        Candidate.prisma = client;
+    }
+
     async save() {
+        if (!Candidate.prisma) {
+            throw new Error('Database connection not initialized');
+        }
+
         const candidateData: any = {};
 
         // Solo añadir al objeto candidateData los campos que no son undefined
@@ -76,7 +83,7 @@ export class Candidate {
         if (this.id) {
             // Actualizar un candidato existente
             try {
-                return await prisma.candidate.update({
+                return await Candidate.prisma.candidate.update({
                     where: { id: this.id },
                     data: candidateData
                 });
@@ -95,7 +102,7 @@ export class Candidate {
         } else {
             // Crear un nuevo candidato
             try {
-                const result = await prisma.candidate.create({
+                const result = await Candidate.prisma.candidate.create({
                     data: candidateData
                 });
                 return result;
@@ -111,11 +118,24 @@ export class Candidate {
     }
 
     static async findOne(id: number): Promise<Candidate | null> {
-        const data = await prisma.candidate.findUnique({
+        if (!Candidate.prisma) {
+            throw new Error('Database connection not initialized');
+        }
+
+        const data = await Candidate.prisma.candidate.findUnique({
             where: { id: id }
         });
         if (!data) return null;
         return new Candidate(data);
+    }
+
+    static async findAll(): Promise<Candidate[]> {
+        if (!Candidate.prisma) {
+            throw new Error('Database connection not initialized');
+        }
+
+        const candidates = await Candidate.prisma.candidate.findMany();
+        return candidates.map(data => new Candidate(data));
     }
 }
 
