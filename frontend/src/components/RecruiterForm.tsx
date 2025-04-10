@@ -2,6 +2,7 @@ import React from 'react';
 import { Modal, Form, Input, message } from 'antd';
 import { Recruiter, CreateRecruiterDto } from '../types/recruiter';
 import { recruiterService } from '../services/recruiterService';
+import axios from 'axios';
 
 interface RecruiterFormProps {
   visible: boolean;
@@ -28,18 +29,28 @@ const RecruiterForm: React.FC<RecruiterFormProps> = ({
         await recruiterService.create(values as CreateRecruiterDto);
         message.success('Recruiter created successfully');
       }
+      form.resetFields();
       onSuccess();
     } catch (error) {
-      message.error('Failed to save recruiter');
+      if (axios.isAxiosError(error) && error.response?.status === 409) {
+        message.error('A recruiter with this email already exists');
+      } else {
+        message.error('Failed to save recruiter');
+      }
       console.error('Error saving recruiter:', error);
     }
+  };
+
+  const handleCancel = () => {
+    form.resetFields();
+    onCancel();
   };
 
   return (
     <Modal
       title={initialValues ? 'Edit Recruiter' : 'Add Recruiter'}
       open={visible}
-      onCancel={onCancel}
+      onCancel={handleCancel}
       onOk={handleSubmit}
       destroyOnClose
       maskClosable={false}

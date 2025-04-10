@@ -16,4 +16,10 @@
 16) "candidates can be added but no modified (edit button not working) and recruiters edition is wrong (PATCH http://localhost:3010/api/recruiters/undefined 400 (Bad Request))"
 17) "same error for candidates and recruiters: "candidateService.ts:23 PATCH http://localhost:3010/api/candidates/undefined 400 (Bad Request) and recruiterService.ts:23 PATCH http://localhost:3010/api/recruiters/undefined 400 (Bad Request)" "
 18) MANY error messages
-19) ""
+19) "candidates are now properly handled, but recruiters editing showns the error "recruiterService.ts:18
+    POST http://localhost:3010/api/recruiters 409 (Conflict)
+    create	@	recruiterService.ts:18
+    handleSubmit	@	RecruiterForm.tsx:28
+    RecruiterForm.tsx:34 Error saving recruiter:
+    AxiosError {message: 'Request failed with status code 409', name: 'AxiosError', code: 'ERR_BAD_REQUEST', config: {…}, request: XMLHttpRequest, …}
+    handleSubmit	@	RecruiterForm.tsx:34"" "
