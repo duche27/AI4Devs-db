@@ -4,11 +4,14 @@ import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { Candidate } from '../types/candidate';
 import candidateService from '../services/candidateService';
 import AddCandidateForm from './AddCandidateForm';
+import EditCandidateForm from './EditCandidateForm';
 
 const CandidateList: React.FC = () => {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [loading, setLoading] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [addModalVisible, setAddModalVisible] = useState(false);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [editingCandidate, setEditingCandidate] = useState<Candidate | null>(null);
 
   const fetchCandidates = async () => {
     try {
@@ -36,6 +39,22 @@ const CandidateList: React.FC = () => {
       message.error('Failed to delete candidate');
       console.error('Error deleting candidate:', error);
     }
+  };
+
+  const handleEdit = (candidate: Candidate) => {
+    setEditingCandidate(candidate);
+    setEditModalVisible(true);
+  };
+
+  const handleEditSuccess = () => {
+    setEditModalVisible(false);
+    setEditingCandidate(null);
+    fetchCandidates();
+  };
+
+  const handleEditCancel = () => {
+    setEditModalVisible(false);
+    setEditingCandidate(null);
   };
 
   const columns = [
@@ -67,7 +86,7 @@ const CandidateList: React.FC = () => {
           <Button
             type="text"
             icon={<EditOutlined />}
-            onClick={() => {/* TODO: Implement edit */}}
+            onClick={() => handleEdit(record)}
           />
           <Button
             type="text"
@@ -86,7 +105,7 @@ const CandidateList: React.FC = () => {
         <Button 
           type="primary" 
           icon={<PlusOutlined />}
-          onClick={() => setModalVisible(true)}
+          onClick={() => setAddModalVisible(true)}
         >
           Add Candidate
         </Button>
@@ -99,13 +118,22 @@ const CandidateList: React.FC = () => {
       />
       
       <AddCandidateForm
-        visible={modalVisible}
-        onCancel={() => setModalVisible(false)}
+        visible={addModalVisible}
+        onCancel={() => setAddModalVisible(false)}
         onSuccess={() => {
-          setModalVisible(false);
+          setAddModalVisible(false);
           fetchCandidates();
         }}
       />
+
+      {editingCandidate && (
+        <EditCandidateForm
+          visible={editModalVisible}
+          onCancel={handleEditCancel}
+          onSuccess={handleEditSuccess}
+          initialValues={editingCandidate}
+        />
+      )}
     </div>
   );
 };

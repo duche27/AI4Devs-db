@@ -13,3 +13,7 @@
 13) "why have you created a recruiter folder within src in backend? recruiter is just another bonded context, distribute backend according to ddd and clean architecture paradigms and continue with the docker compose after it"
 14) MANY error messages
 15) "now there are no errors and I can create a recruiter, but the add candidates button is not working"
+16) "candidates can be added but no modified (edit button not working) and recruiters edition is wrong (PATCH http://localhost:3010/api/recruiters/undefined 400 (Bad Request))"
+17) "same error for candidates and recruiters: "candidateService.ts:23 PATCH http://localhost:3010/api/candidates/undefined 400 (Bad Request) and recruiterService.ts:23 PATCH http://localhost:3010/api/recruiters/undefined 400 (Bad Request)" "
+18) MANY error messages
+19) ""

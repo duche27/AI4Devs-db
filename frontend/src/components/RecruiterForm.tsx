@@ -21,7 +21,7 @@ const RecruiterForm: React.FC<RecruiterFormProps> = ({
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-      if (initialValues) {
+      if (initialValues?.id) {
         await recruiterService.update(initialValues.id, values);
         message.success('Recruiter updated successfully');
       } else {
@@ -31,13 +31,14 @@ const RecruiterForm: React.FC<RecruiterFormProps> = ({
       onSuccess();
     } catch (error) {
       message.error('Failed to save recruiter');
+      console.error('Error saving recruiter:', error);
     }
   };
 
   return (
     <Modal
       title={initialValues ? 'Edit Recruiter' : 'Add Recruiter'}
-      visible={visible}
+      open={visible}
       onCancel={onCancel}
       onOk={handleSubmit}
       destroyOnClose
