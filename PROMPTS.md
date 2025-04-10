@@ -23,3 +23,4 @@
     RecruiterForm.tsx:34 Error saving recruiter:
     AxiosError {message: 'Request failed with status code 409', name: 'AxiosError', code: 'ERR_BAD_REQUEST', config: {…}, request: XMLHttpRequest, …}
     handleSubmit	@	RecruiterForm.tsx:34"" "
+20) this is a Prisma schema, can you please create a database relationshipd diagram from it? (I paste the latest schema.prisma estatus)" -> I leave the result in the Readme file
